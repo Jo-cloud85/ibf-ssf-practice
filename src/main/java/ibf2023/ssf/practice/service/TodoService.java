@@ -21,11 +21,23 @@ public class TodoService {
         todoRepo.saveTodoListToRedis(key, todoList);
     }
 
-    public Map<Integer, Todo> getToDoList() {
+    public Map<String, Todo> getToDoList() {
         return todoRepo.getTodoListFrRedis();
     }
 
     public void createTodo(Todo todo) {
-        todoRepo.saveTodoToRedis(todo);
+        todoRepo.saveNewTodoToRedis(todo);
+    }
+
+    public Todo getTodoById(String id) {
+        return todoRepo.getTodoById(id);
+    }
+
+    public void updateTodo(Todo todo) {
+        todoRepo.updateTodo(todo);
+    }
+
+    public void deleteTodo(Todo todo) {
+        todoRepo.deleteTodo(todo);
     }
 }

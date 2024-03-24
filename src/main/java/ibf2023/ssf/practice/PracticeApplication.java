@@ -24,12 +24,11 @@ public class PracticeApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		HelperRepo helperRepo = new HelperRepo();
-        List<Todo> todoList = helperRepo.convertTodoStrListToTodoList();
-		// System.out.println(todoList);
+		// HelperRepo helperRepo = new HelperRepo();
+        // List<Todo> todoList = helperRepo.convertTodoStrListToTodoList();
+		// // System.out.println(todoList);
 
-		// .saveExisitingTodoList() method will convert each Todo object to a String
-		//todoService.saveExistingTodoList(Util.KEY_TODO, todoList);
-		// todoService.getToDoList();
+		// // .saveExisitingTodoList() method will convert each Todo object to a String
+		// todoService.saveExistingTodoList(Util.KEY_TODO, todoList);
 	}
 }

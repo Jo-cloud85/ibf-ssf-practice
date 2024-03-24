@@ -4,8 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" 
+		href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" 
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+		crossorigin="anonymous">
 </head>
 <body>
-    
+    <div class="container pt-5">
+        <h1>Welcome to Todos!</h1>
+        <h2>Please login first</h2>
+        <form class="pt-4" method="POST" th:action="@{/}" th:object="${newLogin}">
+            <div class="form-group">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="fullName" th:field="*{fullName}">
+                <div
+                    class="alert alert-danger mt-3"
+                    role="alert"
+                    th:if="${#fields.hasErrors('fullName')}"
+                    th:errors="*{fullName}"
+                    th:errorclass="error">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" class="form-control" name="age" th:field="*{age}">
+                <div
+                    class="alert alert-danger mt-3"
+                    role="alert"
+                    th:if="${#fields.hasErrors('age')}"
+                    th:errors="*{age}"
+                    th:errorclass="error">
+                </div>
+            </div>
+
+            <div data-th-if="${#fields.hasErrors('global')}">
+                <span data-th-errors="*{global}"></span>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-dark rounded-pill mt-4 px-4 py-2 ">Login</button>
+            </div>
+
+        </form>
 </body>
 </html>

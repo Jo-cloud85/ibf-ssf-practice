@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,56 +30,53 @@ public class TodoRepo {
     @Qualifier(Util.KEY_TODO)
     RedisTemplate<String, Todo> template;
 
-    HashOperations<String, Integer, Todo> hashOps;
+    HashOperations<String, String, Todo> hashOps;
 
     @SuppressWarnings("null")
     public void saveTodoListToRedis(String key, List<Todo> todoList) throws ParseException {
         hashOps = template.opsForHash();
         for (Integer i = 0; i < todoList.size(); i++) {
             Todo todo = todoList.get(i);
-            // // Have to convert all the dates to epoch date
-            // long dueDateEpochMillis = todo.getDueDate().getTime();
-            // long createdAtEpochMillis = todo.getCreatedAt().getTime();
-            // long updatedAtEpochMillis = todo.getUpdatedAt().getTime();
-
-            // // Update Todo object with epoch milliseconds dates
-            // todo.setDueDateEpochMillis(dueDateEpochMillis);
-
-            hashOps.putIfAbsent(Util.KEY_TODO, i, todo);
+            hashOps.putIfAbsent(Util.KEY_TODO, todo.getId(), todo);
         }
     }
 
-    public Map<Integer, Todo> getTodoListFrRedis() {
+    public Map<String, Todo> getTodoListFrRedis() {
         hashOps = template.opsForHash();
-        Map<Integer, Todo> todoMap = hashOps.entries(Util.KEY_TODO);
-
-        // // Create a SimpleDateFormat object for formatting the date
-        // SimpleDateFormat sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
-
-        // // Iterate over the todoMap entries
-        // for (Map.Entry<Integer, Todo> entry : todoMap.entrySet()) {
-        //     Todo todo = entry.getValue();
-        //     System.out.println(todo);
-        //     // Get the dueDate in epoch milliseconds from the todo object
-        //     // long epochMilliseconds = todo.getDueDate();
-
-        //     // // Convert epoch milliseconds to a human-readable date format
-        //     // Date date = new Date(epochMilliseconds);
-        //     // String formattedDate = sdf.format(date);
-
-        //     // // Update the todo object with the formatted dueDate
-        //     // todo.setDueDate(formattedDate); // Assuming you have a setter for dueDateStr in Todo class
-        // }
-
+        Map<String, Todo> todoMap = hashOps.entries(Util.KEY_TODO);
         return todoMap;
     }
 
     @SuppressWarnings("null")
-    public void saveTodoToRedis(Todo todo) {
+    public void saveNewTodoToRedis(Todo todo) {
         hashOps = template.opsForHash(); 
-        // Get the size of existing data
-        int lastId = getTodoListFrRedis().size();
-        hashOps.putIfAbsent(Util.KEY_TODO, lastId+1, todo);
+        hashOps.putIfAbsent(Util.KEY_TODO, todo.getId(), todo);
+    }
+
+    // Read a specific record (from Redis Map)
+    public Todo getTodoById(String id) {
+        hashOps = template.opsForHash(); 
+        Map<String, Todo> todoMap = hashOps.entries(Util.KEY_TODO);
+    
+        Optional<Todo> todoOptional = todoMap.values().stream()
+                                        .filter(todo -> todo.getId().equals(id))
+                                        .findFirst();
+        
+        return todoOptional.orElse(null);
+    }
+
+    // Update a specific record - make sure id no change
+    @SuppressWarnings("null")
+    public void updateTodo(Todo todo) {
+        hashOps = template.opsForHash(); 
+        System.out.println("Updating statement from Repo..." + todo);
+        hashOps.put(Util.KEY_TODO, todo.getId(), todo);
+    }
+
+    // Delete operations of a record (in Redis Map)
+    public void deleteTodo(Todo todo) {
+        hashOps = template.opsForHash(); 
+        hashOps.delete(Util.KEY_TODO, todo.getId());
     }
 
 }
