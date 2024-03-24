@@ -31,7 +31,7 @@ COPY --from=builder /app/target/practice-0.0.1-SNAPSHOT.jar .
 
 # run
 # ENV OPENWEATHERMAP_KEY=abc123
-ENV PORT=8080
+ENV PORT=3000
 
 EXPOSE ${PORT}
 
