@@ -1,15 +1,12 @@
 package ibf2023.ssf.practice.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class Todo implements Serializable {

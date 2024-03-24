@@ -27,6 +27,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
+    @SuppressWarnings("null")
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
 
