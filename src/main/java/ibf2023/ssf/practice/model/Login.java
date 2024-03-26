@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Size;
 
 public class Login {
 
+    /* Strings and primitives, use @NotEmpty
+     * Reference types, include wrappers and Date, use @NotNull
+     */
+
     @NotEmpty(message="Name cannot be null")
     @Size(min=5, max=32, message="Name must be between 5 to 32 characters")
     private String fullName;

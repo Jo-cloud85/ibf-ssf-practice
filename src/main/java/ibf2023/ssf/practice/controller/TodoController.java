@@ -171,4 +171,10 @@ public class TodoController {
             return "refused";
         }
     }
+
+    @GetMapping("/todo/logout")
+    public String logout(HttpSession session) {
+            session.invalidate();
+            return "redirect:/";
+    }
 }
