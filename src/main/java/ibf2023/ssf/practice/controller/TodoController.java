@@ -58,7 +58,6 @@ public class TodoController {
             mav.addObject("todoList", filteredTodoList);
             return mav;
         } else {
-            //mav.addObject("showTodoList", false); // Don't show the todo list if user is not logged in
             ModelAndView mav = new ModelAndView("refused");
             return mav;
         }
@@ -94,7 +93,7 @@ public class TodoController {
             todo.setUpdatedAt(new Date());
     
             if (result.hasErrors()) {
-                System.out.println(result.getAllErrors());
+                // System.out.println(result.getAllErrors());
                 return "add";
             }
             
@@ -136,6 +135,11 @@ public class TodoController {
         if (session.getAttribute("login") != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 
+            // if (result.hasErrors()) {
+            //     // result.getAllErrors().forEach(System.out::println);
+            //     return "update";
+            // }
+
             todo.setId(id);
             try {
                 Date date = formatter.parse(createdAt);
@@ -144,13 +148,6 @@ public class TodoController {
                 e.printStackTrace();
             }
             todo.setUpdatedAt(new Date());
-            
-            // System.out.println("From todo controller ........." + todo.toString());
-    
-            // if (result.hasErrors()) {
-            //     result.getAllErrors().forEach(System.out::println);
-            //     return "update";
-            // }
             
             todoService.updateTodo(todo);
 

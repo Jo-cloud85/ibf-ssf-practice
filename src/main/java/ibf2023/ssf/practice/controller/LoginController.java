@@ -21,28 +21,32 @@ public class LoginController {
     public ModelAndView getLoginForm() {
         Login login = new Login();
         ModelAndView mav = new ModelAndView("login");
-
         mav.addObject("newLogin", login);
         return mav;
     }
 
     @PostMapping
-    public String login(
+    public ModelAndView login(
         HttpSession session,
-        @ModelAttribute @Valid Login login,
+        @ModelAttribute("newLogin") @Valid Login login,
         BindingResult result) {
 
-        if (login.getAge() < 10) {
-            return "underage";
-        }
+        ModelAndView mav = new ModelAndView("login");
 
         if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
-            return "redirect:/"; // return to login page
+            mav.addObject("newLogin", login);
+        } else {
+            mav.addObject("newLogin", new Login());
+
+            if (login.getAge() < 10) {
+                mav.setViewName("underage");
+            }
+    
+            session.setAttribute("login", login);
+    
+            mav.setViewName("redirect:/todo");
         }
 
-        session.setAttribute("login", login);
-
-        return "redirect:/todo"; // which is the listing page
+        return mav; // which is the listing page
     } 
 }

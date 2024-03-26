@@ -133,7 +133,8 @@ public class DataService {
          * When write to List, it's converting from String to Date (Sun Oct 15 00:00:00 SGT 2023)
          * When save from List to Redis, it's converting from Date (Sun Oct 15 00:00:00 SGT 2023) to Long
          * When retrieve from Redis to List, it's converting from Long to Date (Sun Oct 15 00:00:00 SGT 2023)
-         * so this JsonObjDate can be either in Sun Oct 15 00:00:00 SGT 2023 or epochmilliseconds date. */
+         * so this JsonObjDate can be either in Sun Oct 15 00:00:00 SGT 2023 or epochmilliseconds date. 
+         * Lastly, you see this format EEE, MM/dd/yyyy is because we use Thymeleaf to format. */
         SimpleDateFormat formatter = new SimpleDateFormat("E, MM/dd/yyyy");
         Date date = null;
 

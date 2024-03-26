@@ -1,17 +1,18 @@
 package ibf2023.ssf.practice.model;
 
-import java.io.Serializable;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class Login implements Serializable {
+public class Login {
 
-    @NotNull(message="Name cannot be null")
+    @NotEmpty(message="Name cannot be null")
     @Size(min=5, max=32, message="Name must be between 5 to 32 characters")
     private String fullName;
 
     @NotNull(message = "Age cannot be null")
+    @Min(value = 0, message = "Age must be a positive number")
     private Integer age;
 
     public Login() {};
