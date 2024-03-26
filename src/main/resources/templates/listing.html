@@ -24,7 +24,7 @@
                 </select>
                 <button type="submit">Apply Filter</button>
             </form>
-            <a class="btn btn-warning rounded-pill py-2 px-4" href="/todo/add">Add new Todo</a>
+            <a class="btn btn-primary rounded-pill py-2 px-4" href="/todo/add">Add new Todo</a>
         </div>
         <table class="table table-striped table-hover mt-3">
             <thead class="thead-dark">
@@ -38,7 +38,6 @@
                     <th>Created At</th>
                     <th>Updated At</th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -46,18 +45,16 @@
                     <td data-th-text="${todo.id}"></td>
                     <td data-th-text="${todo.name}"></td>
                     <td data-th-text="${todo.description}"></td>
-                    <td data-th-text="${todo.dueDate}"></td>
+                    <td data-th-text="${#dates.format(todo.dueDate, 'EEE, MM/dd/yyyy')}"></td>
                     <td data-th-text="${todo.priority}"></td>
                     <td data-th-text="${todo.status}"></td>
-                    <td data-th-text="${todo.createdAt}"></td>
-                    <td data-th-text="${todo.updatedAt}"></td>
-                    <td>
-                        <a class="btn btn-secondary rounded-pill px-4 py-2"
+                    <td data-th-text="${#dates.format(todo.createdAt, 'EEE, MM/dd/yyyy')}"></td>
+                    <td data-th-text="${#dates.format(todo.updatedAt, 'EEE, MM/dd/yyyy')}"></td>
+                    <td class="d-flex flex-column">
+                        <a class="btn btn-warning rounded-pill px-4 py-2"
                            data-th-href="@{/todo/update/{id}(id=${todo.id})}">Update
                         </a>
-                    </td>
-                    <td>
-                        <a class="btn btn-danger rounded-pill px-4 py-2"
+                        <a class="btn btn-danger rounded-pill px-4 py-2 mt-2"
                            data-th-href="@{/todo/delete/{id}(id=${todo.id})}">Delete
                         </a>
                     </td>

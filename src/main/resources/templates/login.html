@@ -13,27 +13,27 @@
     <div class="container pt-5">
         <h1>Welcome to Todos!</h1>
         <h2>Please login first</h2>
-        <form class="pt-4" method="POST" th:action="@{/}" th:object="${newLogin}">
+        <form class="pt-4" method="POST" data-th-action="@{/}" data-th-object="${newLogin}">
             <div class="form-group">
                 <label for="fullName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" name="fullName" th:field="*{fullName}">
+                <input type="text" class="form-control" name="fullName" data-th-field="*{fullName}">
                 <div
                     class="alert alert-danger mt-3"
                     role="alert"
-                    th:if="${#fields.hasErrors('fullName')}"
-                    th:errors="*{fullName}"
-                    th:errorclass="error">
+                    data-th-if="${#fields.hasErrors('fullName')}"
+                    data-th-errors="*{fullName}"
+                    data-th-errorclass="error">
                 </div>
             </div>
             <div class="form-group">
                 <label for="age" class="form-label">Age</label>
-                <input type="number" class="form-control" name="age" th:field="*{age}">
+                <input type="number" class="form-control" name="age" data-th-field="*{age}">
                 <div
                     class="alert alert-danger mt-3"
                     role="alert"
-                    th:if="${#fields.hasErrors('age')}"
-                    th:errors="*{age}"
-                    th:errorclass="error">
+                    data-th-if="${#fields.hasErrors('age')}"
+                    data-th-errors="*{age}"
+                    data-th-errorclass="error">
                 </div>
             </div>
 

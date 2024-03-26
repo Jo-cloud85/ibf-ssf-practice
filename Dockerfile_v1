@@ -1,0 +1,30 @@
+# Build stage
+# 'builder' is the alias which is not necessary in single-stage environment
+# but in multi-stage, you will need
+
+FROM openjdk:21-jdk-bullseye
+
+# dir where it will contain your src and target
+WORKDIR /app
+
+# copy all required files to build the app into the image app folder
+COPY mvnw .
+COPY pom.xml .
+COPY src src
+COPY .mvn .mvn
+
+# use run command to run maven command to build the package, exclude unit testing
+# download maven dependencies and build your jar file into target folder
+RUN ./mvnw package -Dmaven.test.skip=true
+
+ENV PORT=3000
+
+EXPOSE ${PORT}
+
+# --start-period=5s: The duration docker is going to wait before Docker checks the health
+# If return 0, it is healthy
+# If return 1, it is unhealthy
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl http://127.0.0.1:${PORT}/healthz || exit 1
+
+ENTRYPOINT SERVER_PORT=${PORT} java -jar target/practice-0.0.1-SNAPSHOT.jar

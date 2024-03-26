@@ -2,10 +2,10 @@ package ibf2023.ssf.practice.controller;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +104,6 @@ public class TodoController {
         } else {
             return "refused";
         }
-        
     }
 
     @GetMapping("/todo/update/{id}")
@@ -116,6 +115,9 @@ public class TodoController {
             Todo todo = todoService.getTodoById(id);
             ModelAndView mav = new ModelAndView("update");
             mav.addObject("updateTodo", todo);
+            // Add the createdAt value to the model, hide it in Thymeleaf, this is so that you can
+            // retrieve this value when you submit the updated todo
+            mav.addObject("createdAt", todo.getCreatedAt());
             return mav;
         } else {
             ModelAndView mav = new ModelAndView("refused");
@@ -127,18 +129,28 @@ public class TodoController {
     public String postUpdateTodo(
         HttpSession session,
         @PathVariable("id") String id,
+        @RequestParam("createdAt") String createdAt, // Add this parameter
         @ModelAttribute("updateTodo") @Valid Todo todo, 
         BindingResult result) throws IOException {
 
         if (session.getAttribute("login") != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+
             todo.setId(id);
-            todo.setCreatedAt(todo.getCreatedAt());
-            todo.setUpdatedAt(new Date());
-    
-            if (result.hasErrors()) {
-                System.out.println(result.getAllErrors());
-                return "update";
+            try {
+                Date date = formatter.parse(createdAt);
+                todo.setCreatedAt(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+            todo.setUpdatedAt(new Date());
+            
+            // System.out.println("From todo controller ........." + todo.toString());
+    
+            // if (result.hasErrors()) {
+            //     result.getAllErrors().forEach(System.out::println);
+            //     return "update";
+            // }
             
             todoService.updateTodo(todo);
 
@@ -149,10 +161,17 @@ public class TodoController {
     }
 
     @GetMapping("/todo/delete/{id}")
-    public String deleteTodo(@PathVariable("id") String id) throws IOException {
-        Todo todo = todoService.getTodoById(id);
-        System.out.println("Deleting...." + todo);
-        todoService.deleteTodo(todo);
-        return "redirect:/todo";
+    public String deleteTodo(
+        HttpSession session,
+        @PathVariable("id") String id) throws IOException {
+        
+        if (session.getAttribute("login") != null) {
+            Todo todo = todoService.getTodoById(id);
+            // System.out.println("Deleting...." + todo);
+            todoService.deleteTodo(todo);
+            return "redirect:/todo";
+        } else {
+            return "refused";
+        }
     }
 }

@@ -15,6 +15,9 @@ COPY pom.xml .
 COPY src src
 COPY .mvn .mvn
 
+# Copy the todos.txt file into the Docker image
+COPY src/main/resources/static/todos.txt /app/src/main/resources/static/
+
 # use run command to run maven command to build the package, exclude unit testing
 # download maven dependencies and build your jar file into target folder
 # target/day17workshop-0.0.1-SNAPSHOT.jar weather.jar
@@ -28,6 +31,8 @@ FROM openjdk:21-jdk-bullseye
 WORKDIR /app_run
 
 COPY --from=builder /app/target/practice-0.0.1-SNAPSHOT.jar .
+# Copy the todos.txt file from the builder stage into the final image
+COPY --from=builder /app/src/main/resources/static/todos.txt /app_run/src/main/resources/static/
 
 # run
 # ENV OPENWEATHERMAP_KEY=abc123
