@@ -32,21 +32,17 @@ public class LoginController {
         @ModelAttribute @Valid Login login,
         BindingResult result) {
 
-        String fullname = login.getFullName();
-        Integer age = login.getAge();
-
-        if (age < 10) {
+        if (login.getAge() < 10) {
             return "underage";
         }
 
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors());
-            return "login";
+            return "redirect:/"; // return to login page
         }
 
-        session.setAttribute("fullName", fullname);
-        session.setAttribute("age", age);
+        session.setAttribute("login", login);
 
-        return "redirect:/todo";
+        return "redirect:/todo"; // which is the listing page
     } 
 }

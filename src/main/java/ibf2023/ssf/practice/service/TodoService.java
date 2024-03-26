@@ -1,8 +1,8 @@
 package ibf2023.ssf.practice.service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,19 @@ public class TodoService {
     @Autowired
     private TodoRepo todoRepo;
 
-    public void saveExistingTodoList(String key, List<Todo> todoList) throws ParseException {
+    @Autowired
+    private DataService dataService;
+
+    public void saveExistingTodoList(String key) throws IOException, ParseException {
+        List<Todo> todoList = dataService.createListFromExtgJsonStr();
         todoRepo.saveTodoListToRedis(key, todoList);
     }
 
-    public Map<String, Todo> getToDoList() {
+    public List<Todo> getToDoList() throws ParseException {
         return todoRepo.getTodoListFrRedis();
     }
 
-    public void createTodo(Todo todo) {
+    public void createTodo(Todo todo) throws IOException {
         todoRepo.saveNewTodoToRedis(todo);
     }
 
@@ -32,7 +36,7 @@ public class TodoService {
         return todoRepo.getTodoById(id);
     }
 
-    public void updateTodo(Todo todo) {
+    public void updateTodo(Todo todo) throws IOException {
         todoRepo.updateTodo(todo);
     }
 

@@ -9,7 +9,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import ibf2023.ssf.practice.model.Todo;
 import ibf2023.ssf.practice.util.Util;
 
 @Configuration
@@ -49,13 +48,16 @@ public class RedisConfig {
     }
 
     @Bean(Util.KEY_TODO)
-    public RedisTemplate<String, Todo> redisObjectTemplate(){
+    public RedisTemplate<String, String> redisObjectTemplate(){
         // Create the template with the client
-        RedisTemplate<String, Todo> template = new RedisTemplate<>();
+        RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
 
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
+        
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
 
         return template;
     }

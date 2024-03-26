@@ -1,6 +1,7 @@
 package ibf2023.ssf.practice.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,92 +35,117 @@ public class TodoController {
     @GetMapping("/todo")
     public ModelAndView listAllTodos(
         @RequestParam(name = "status", defaultValue = "ALL") String status,
-        HttpSession session) {
+        HttpSession session) throws ParseException {
 
-        ModelAndView mav = new ModelAndView("listing");
-
-        if (session.getAttribute("fullName") != null && session.getAttribute("age") != null) {
-            Map<String, Todo> todoMap = todoService.getToDoList();
-            List<Todo> todoList = new LinkedList<>();
+        if (session.getAttribute("login") != null) {
+            ModelAndView mav = new ModelAndView("listing");
+            List<Todo> todoList = todoService.getToDoList();
+            List<Todo> filteredTodoList = new LinkedList<>();
 
             // Filter todo tasks based on status
             if (!status.equals("ALL")) {
-                for (Map.Entry<String, Todo> entry : todoMap.entrySet()) {
-                    Todo todo = entry.getValue();
-                    if (todo.getStatus().equals(status.toLowerCase())) {
-                        todoList.add(todo);
+                for (Todo todo : todoList) {
+                    // actually I have alrdy lowercased in HTML
+                    if (todo.getStatus().equals(status.toLowerCase())) { 
+                        filteredTodoList.add(todo);
                     }
                 }
             } else {
-                todoList.addAll(todoMap.values()); // If status is ALL, include all tasks
+                filteredTodoList.addAll(todoList); // If status is ALL, include all tasks
             }
 
             mav.addObject("showTodoList", true); // Show the todo list since user is logged in
-            mav.addObject("todoList", todoList);
+            mav.addObject("todoList", filteredTodoList);
+            return mav;
         } else {
-            mav.addObject("showTodoList", false); // Don't show the todo list if user is not logged in
+            //mav.addObject("showTodoList", false); // Don't show the todo list if user is not logged in
+            ModelAndView mav = new ModelAndView("refused");
+            return mav;
         }
-
-        return mav;
     }
 
     // Get /add page
     @GetMapping("/todo/add")
-    public ModelAndView getTodoForm() {
+    public ModelAndView getTodoForm(
+        HttpSession session) {
+
         Todo todo = new Todo();
-        ModelAndView mav = new ModelAndView("add");
-        mav.addObject("newTodo", todo);
-        return mav;
+        
+        if (session.getAttribute("login") != null) {
+            ModelAndView mav = new ModelAndView("add");
+            mav.addObject("newTodo", todo);
+            return mav;
+        } else {
+            ModelAndView mav = new ModelAndView("refused");
+            return mav;
+        }
     }
 
     // Post to /add page
     @PostMapping("/todo/add")
     public String addTodo(
+        HttpSession session,
         @ModelAttribute("newTodo") @Valid Todo todo, 
-        BindingResult result) {
+        BindingResult result) throws IOException {
 
-        todo.setId(UUID.randomUUID().toString());
-        todo.setCreatedAt(new Date());
-        todo.setUpdatedAt(new Date());
-
-        // System.out.println(todo.toString());
-
-        if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
-            return "add";
+        if (session.getAttribute("login") != null) {
+            todo.setId(UUID.randomUUID().toString());
+            todo.setCreatedAt(new Date());
+            todo.setUpdatedAt(new Date());
+    
+            if (result.hasErrors()) {
+                System.out.println(result.getAllErrors());
+                return "add";
+            }
+            
+            todoService.createTodo(todo);
+    
+            return "success";
+        } else {
+            return "refused";
         }
         
-        todoService.createTodo(todo);
-
-        return "success";
     }
 
     @GetMapping("/todo/update/{id}")
-    public ModelAndView updateTodo(@PathVariable("id") String id) throws IOException {
-        Todo todo = todoService.getTodoById(id);
-        ModelAndView mav = new ModelAndView("update");
-        mav.addObject("updateTodo", todo);
-        //todoService.updateTodo(todo);
-        return mav;
+    public ModelAndView updateTodo(
+        HttpSession session,
+        @PathVariable("id") String id) throws IOException {
+        
+        if (session.getAttribute("login") != null) {
+            Todo todo = todoService.getTodoById(id);
+            ModelAndView mav = new ModelAndView("update");
+            mav.addObject("updateTodo", todo);
+            return mav;
+        } else {
+            ModelAndView mav = new ModelAndView("refused");
+            return mav;
+        }
     }
 
     @PostMapping("/todo/update/{id}")
     public String postUpdateTodo(
+        HttpSession session,
         @PathVariable("id") String id,
         @ModelAttribute("updateTodo") @Valid Todo todo, 
         BindingResult result) throws IOException {
 
-        todo.setId(id);
-        todo.setCreatedAt(todo.getCreatedAt());
-        todo.setUpdatedAt(new Date());
+        if (session.getAttribute("login") != null) {
+            todo.setId(id);
+            todo.setCreatedAt(todo.getCreatedAt());
+            todo.setUpdatedAt(new Date());
+    
+            if (result.hasErrors()) {
+                System.out.println(result.getAllErrors());
+                return "update";
+            }
+            
+            todoService.updateTodo(todo);
 
-        if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
-            return "update";
+            return "redirect:/todo";
+        } else {
+            return "refused";
         }
-        
-        todoService.updateTodo(todo);
-        return "redirect:/todo";
     }
 
     @GetMapping("/todo/delete/{id}")

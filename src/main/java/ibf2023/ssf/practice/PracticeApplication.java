@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ibf2023.ssf.practice.service.TodoService;
+import ibf2023.ssf.practice.util.Util;
 
 @SpringBootApplication
 public class PracticeApplication implements CommandLineRunner {
@@ -21,10 +22,6 @@ public class PracticeApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		// To load data from todos.txt to Redis ----------------------
-		// HelperRepo helperRepo = new HelperRepo();
-        // List<Todo> todoList = helperRepo.convertTodoStrListToTodoList();
-
-		// // .saveExisitingTodoList() method will convert each Todo object to a String
-		// todoService.saveExistingTodoList(Util.KEY_TODO, todoList);
+		todoService.saveExistingTodoList(Util.KEY_TODO);
 	}
 }
