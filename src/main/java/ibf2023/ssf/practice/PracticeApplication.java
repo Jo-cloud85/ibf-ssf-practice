@@ -22,9 +22,6 @@ public class PracticeApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		// To load data from todos.txt to Redis ----------------------
-		// Before pushing to Docker and then Railway,
-		// Restart the whole application. Make sure Redis record is with original list.
-		// And then, comment this line of code out.
 		todoService.saveExistingTodoList(Util.KEY_TODO);
 		todoService.getToDoList();
 	}
